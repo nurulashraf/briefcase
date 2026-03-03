@@ -42,7 +42,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/briefcase.git
+git clone https://github.com/nurulashraf/briefcase.git
 cd briefcase
 
 # Install dependencies
