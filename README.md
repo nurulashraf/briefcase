@@ -6,9 +6,9 @@
 
 ## ✨ Features
 
-- 🗂️ **Chrome-style tabs** — Top-level tabs + sub-tabs (2-level hierarchy)
-- 🔄 **Drag & drop** — Reorder tabs by dragging them around
-- 📌 **Pinnable tabs** — Pin tabs to keep them compact and always accessible
+- 🗂️ **Chrome-style tabs** — Top-level tabs + sub-tabs (2-level hierarchy) with close buttons
+- 🔄 **Drag & drop** — Reorder tabs and board cards by dragging
+- 📌 **Pinnable tabs, notes & files** — Pin important items to keep them front and center (Google Keep-style sections)
 - 📝 **Rich text notes** — Google Keep-style cards with bold, italic, lists, and more (Tiptap editor)
 - 📎 **File attachments** — Upload and manage files per tab (stored in Supabase Storage)
 - 🌙 **Dark mode** — Toggle between light and dark themes, persisted across sessions
@@ -27,6 +27,7 @@
 | **Rich Text** | Tiptap 3 (ProseMirror) |
 | **Backend** | Supabase (PostgreSQL + Auth + Storage) |
 | **Auth** | Google OAuth via Supabase |
+| **Hosting** | Vercel |
 
 ---
 
@@ -66,7 +67,7 @@ The app will be running at `http://localhost:5173`.
 2. Open the **SQL Editor**
 3. Paste the contents of `supabase/migrations/schema.sql` and run it
 
-This creates the `tabs`, `notes`, and `attachments` tables, along with indexes, triggers, and a private storage bucket.
+This creates the `tabs`, `notes`, and `attachments` tables, along with indexes, triggers, a private storage bucket, and Row Level Security (RLS) policies for authenticated users.
 
 ---
 
@@ -101,10 +102,10 @@ src/
 │   │   ├── AppShell.tsx           # Main layout (tab bars + board)
 │   │   └── ThemeToggle.tsx        # Dark/light mode switch
 │   ├── board/
-│   │   ├── Board.tsx              # Masonry grid of notes & files
-│   │   ├── NoteCard.tsx           # Note preview card
+│   │   ├── Board.tsx              # Board with pinned sections + drag-and-drop
+│   │   ├── NoteCard.tsx           # Note card (draggable, pinnable)
 │   │   ├── NoteModal.tsx          # Rich text editor modal
-│   │   └── FileCard.tsx           # File attachment card
+│   │   └── FileCard.tsx           # File card (draggable, pinnable)
 │   ├── tabs/
 │   │   ├── TabBar.tsx             # Reusable tab bar (dark/light)
 │   │   ├── TabItem.tsx            # Tab with drag, pin, close, rename
@@ -114,14 +115,14 @@ src/
 ├── hooks/
 │   ├── useAuth.ts                 # Google OAuth + session state
 │   ├── useTabs.ts                 # Tab CRUD + reorder + pin
-│   ├── useBoard.ts                # Notes & attachments loader
-│   ├── useAttachments.ts          # File upload/download/delete
+│   ├── useBoard.ts                # Notes loader + pin toggle
+│   ├── useAttachments.ts          # File upload/download/delete + pin toggle
 │   └── useTheme.ts                # Dark mode (localStorage)
 │
 ├── services/
 │   ├── tabService.ts              # Tab database queries
-│   ├── noteService.ts             # Note CRUD operations
-│   └── attachmentService.ts       # File storage operations
+│   ├── noteService.ts             # Note CRUD + reorder + pin
+│   └── attachmentService.ts       # File storage + reorder + pin
 │
 ├── lib/
 │   ├── supabase.ts                # Supabase client init
@@ -130,6 +131,20 @@ src/
 └── types/
     └── index.ts                   # TypeScript interfaces
 ```
+
+---
+
+## 🚢 Deployment
+
+The app is deployed on [Vercel](https://vercel.com/):
+
+1. Import the GitHub repo on Vercel
+2. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as environment variables
+3. Deploy — Vercel auto-detects Vite and handles the build
+
+Remember to add your Vercel domain to:
+- **Supabase** → Authentication → URL Configuration → Redirect URLs
+- **Google Cloud Console** → OAuth credentials → Authorized redirect URIs
 
 ---
 

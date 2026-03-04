@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Note, Attachment } from '../types'
-import { getNotesByTab, createNote, deleteNote } from '../services/noteService'
+import { getNotesByTab, createNote, deleteNote, toggleNotePin as toggleNotePinService } from '../services/noteService'
 
 export function useBoard(tabId: string | null) {
   const [notes, setNotes] = useState<Note[]>([])
@@ -55,14 +55,26 @@ export function useBoard(tabId: string | null) {
     setNotes(prev => prev.map(n => n.id === id ? { ...n, ...updates } : n))
   }, [])
 
+  const toggleNotePin = useCallback(async (id: string, is_pinned: boolean) => {
+    setNotes(prev => prev.map(n => n.id === id ? { ...n, is_pinned } : n))
+    try {
+      await toggleNotePinService(id, is_pinned)
+    } catch (err) {
+      console.error('Failed to toggle note pin:', err)
+      setNotes(prev => prev.map(n => n.id === id ? { ...n, is_pinned: !is_pinned } : n))
+    }
+  }, [])
+
   return {
     notes,
+    setNotes,
     attachments,
     setAttachments,
     isLoading,
     addNote,
     removeNote,
     updateNoteInList,
+    toggleNotePin,
     refetch: fetchBoard,
   }
 }

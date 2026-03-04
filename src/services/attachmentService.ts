@@ -55,6 +55,25 @@ export async function getDownloadUrl(storagePath: string): Promise<string> {
   return data.signedUrl
 }
 
+export async function toggleAttachmentPin(id: string, is_pinned: boolean): Promise<void> {
+  const { error } = await supabase
+    .from('attachments')
+    .update({ is_pinned })
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+export async function reorderAttachments(updates: { id: string; position: number }[]): Promise<void> {
+  const results = await Promise.all(
+    updates.map(({ id, position }) =>
+      supabase.from('attachments').update({ position }).eq('id', id)
+    )
+  )
+  const failed = results.find(r => r.error)
+  if (failed?.error) throw failed.error
+}
+
 export async function deleteAttachment(id: string, storagePath: string): Promise<void> {
   // Delete from storage
   const { error: storageError } = await supabase.storage

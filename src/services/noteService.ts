@@ -45,3 +45,22 @@ export async function deleteNote(id: string): Promise<void> {
 
   if (error) throw error
 }
+
+export async function toggleNotePin(id: string, is_pinned: boolean): Promise<void> {
+  const { error } = await supabase
+    .from('notes')
+    .update({ is_pinned })
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+export async function reorderNotes(updates: { id: string; position: number }[]): Promise<void> {
+  const results = await Promise.all(
+    updates.map(({ id, position }) =>
+      supabase.from('notes').update({ position }).eq('id', id)
+    )
+  )
+  const failed = results.find(r => r.error)
+  if (failed?.error) throw failed.error
+}

@@ -28,6 +28,7 @@ CREATE TABLE notes (
   title       TEXT NOT NULL DEFAULT '',
   content     TEXT NOT NULL DEFAULT '',
   position    INTEGER NOT NULL DEFAULT 0,
+  is_pinned   BOOLEAN NOT NULL DEFAULT false,
   created_at  TIMESTAMPTZ DEFAULT now(),
   updated_at  TIMESTAMPTZ DEFAULT now()
 );
@@ -45,6 +46,7 @@ CREATE TABLE attachments (
   mime_type     TEXT NOT NULL DEFAULT 'application/octet-stream',
   storage_path  TEXT NOT NULL,
   position      INTEGER NOT NULL DEFAULT 0,
+  is_pinned     BOOLEAN NOT NULL DEFAULT false,
   created_at    TIMESTAMPTZ DEFAULT now()
 );
 
@@ -75,3 +77,48 @@ CREATE TRIGGER trg_notes_updated_at
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('briefcase-files', 'briefcase-files', false)
 ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================
+-- Row Level Security (RLS) policies
+-- Allows all operations for authenticated users
+-- ============================================================
+
+-- Tabs
+ALTER TABLE tabs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated users can do everything on tabs"
+  ON tabs FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Notes
+ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated users can do everything on notes"
+  ON notes FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Attachments
+ALTER TABLE attachments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated users can do everything on attachments"
+  ON attachments FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Storage: briefcase-files bucket
+CREATE POLICY "Authenticated users can upload files"
+  ON storage.objects FOR INSERT
+  TO authenticated
+  WITH CHECK (bucket_id = 'briefcase-files');
+
+CREATE POLICY "Authenticated users can read files"
+  ON storage.objects FOR SELECT
+  TO authenticated
+  USING (bucket_id = 'briefcase-files');
+
+CREATE POLICY "Authenticated users can delete files"
+  ON storage.objects FOR DELETE
+  TO authenticated
+  USING (bucket_id = 'briefcase-files');

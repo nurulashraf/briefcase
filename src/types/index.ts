@@ -14,6 +14,7 @@ export interface Note {
   title: string
   content: string
   position: number
+  is_pinned: boolean
   created_at: string
   updated_at: string
 }
@@ -26,5 +27,6 @@ export interface Attachment {
   mime_type: string
   storage_path: string
   position: number
+  is_pinned: boolean
   created_at: string
 }

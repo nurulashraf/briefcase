@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Attachment } from '../types'
-import { getAttachments, uploadAttachment, deleteAttachment, getDownloadUrl } from '../services/attachmentService'
+import { getAttachments, uploadAttachment, deleteAttachment, getDownloadUrl, toggleAttachmentPin as toggleAttachmentPinService } from '../services/attachmentService'
 
 export function useAttachments(tabId: string | null) {
   const [attachments, setAttachments] = useState<Attachment[]>([])
@@ -63,5 +63,15 @@ export function useAttachments(tabId: string | null) {
     }
   }, [])
 
-  return { attachments, isLoading, isUploading, upload, remove, download, refetch: fetchAttachments }
+  const togglePin = useCallback(async (id: string, is_pinned: boolean) => {
+    setAttachments(prev => prev.map(a => a.id === id ? { ...a, is_pinned } : a))
+    try {
+      await toggleAttachmentPinService(id, is_pinned)
+    } catch (err) {
+      console.error('Failed to toggle attachment pin:', err)
+      setAttachments(prev => prev.map(a => a.id === id ? { ...a, is_pinned: !is_pinned } : a))
+    }
+  }, [])
+
+  return { attachments, setAttachments, isLoading, isUploading, upload, remove, download, togglePin, refetch: fetchAttachments }
 }
