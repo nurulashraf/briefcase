@@ -9,7 +9,7 @@
 - 🗂️ **Chrome-style tabs** — Top-level tabs + sub-tabs (2-level hierarchy) with close buttons
 - 🔄 **Drag & drop** — Reorder tabs and board cards by dragging
 - 📌 **Pinnable tabs, notes & files** — Pin important items to keep them front and center (Google Keep-style sections)
-- 📝 **Rich text notes** — Google Keep-style cards with bold, italic, lists, and more (Tiptap editor)
+- 📝 **Rich text notes** — Google Keep-style cards with bold, italic, lists, checkboxes, and inline images (Tiptap editor)
 - 📎 **File attachments** — Upload and manage files per tab (stored in Supabase Storage)
 - 🌙 **Dark mode** — Toggle between light and dark themes, persisted across sessions
 - 🔐 **Google OAuth** — Secure sign-in with your Google account via Supabase Auth
@@ -104,7 +104,7 @@ src/
 │   ├── board/
 │   │   ├── Board.tsx              # Board with pinned sections + drag-and-drop
 │   │   ├── NoteCard.tsx           # Note card (draggable, pinnable)
-│   │   ├── NoteModal.tsx          # Rich text editor modal
+│   │   ├── NoteModal.tsx          # Rich text editor (checkboxes, images)
 │   │   └── FileCard.tsx           # File card (draggable, pinnable)
 │   ├── tabs/
 │   │   ├── TabBar.tsx             # Reusable tab bar (dark/light)
