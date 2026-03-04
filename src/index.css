@@ -83,6 +83,92 @@ body {
   font-weight: 600;
 }
 
+/* Task list (checkboxes) */
+.tiptap-editor .ProseMirror ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5em 0;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  margin: 0.25em 0;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li label {
+  display: flex;
+  align-items: center;
+  margin-top: 0.2em;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #a8a29e;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li label input[type="checkbox"]:checked {
+  background: #78716c;
+  border-color: #78716c;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li label input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 6px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div > p {
+  text-decoration: line-through;
+  color: #a8a29e;
+}
+
+.dark .tiptap-editor .ProseMirror ul[data-type="taskList"] li label input[type="checkbox"] {
+  border-color: #78716c;
+}
+
+.dark .tiptap-editor .ProseMirror ul[data-type="taskList"] li label input[type="checkbox"]:checked {
+  background: #a8a29e;
+  border-color: #a8a29e;
+}
+
+.dark .tiptap-editor .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div > p {
+  color: #78716c;
+}
+
+/* Nested task lists */
+.tiptap-editor .ProseMirror ul[data-type="taskList"] ul[data-type="taskList"] {
+  margin-left: 1.5em;
+}
+
+/* Images */
+.tiptap-editor .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 0.75em 0;
+}
+
+.tiptap-editor .ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid #78716c;
+  outline-offset: 2px;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

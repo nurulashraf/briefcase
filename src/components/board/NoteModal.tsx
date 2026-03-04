@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
+import Image from '@tiptap/extension-image'
 import type { Note } from '../../types'
 import { updateNote } from '../../services/noteService'
-import { BoldIcon, ItalicIcon, ListIcon, OrderedListIcon, HeadingIcon } from '../icons'
+import { BoldIcon, ItalicIcon, ListIcon, OrderedListIcon, HeadingIcon, CheckboxIcon, ImageIcon } from '../icons'
 
 interface NoteModalProps {
   note: Note
@@ -14,9 +17,15 @@ interface NoteModalProps {
 export function NoteModal({ note, onClose, onUpdate }: NoteModalProps) {
   const [title, setTitle] = useState(note.title)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      TaskList,
+      TaskItem.configure({ nested: true }),
+      Image.configure({ inline: false, allowBase64: true }),
+    ],
     content: note.content,
     editorProps: {
       attributes: {
@@ -67,6 +76,19 @@ export function NoteModal({ note, onClose, onUpdate }: NoteModalProps) {
     return () => window.removeEventListener('keydown', handleKey)
   }, [handleClose])
 
+  const handleImageUpload = (files: FileList | null) => {
+    if (!files || !editor) return
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith('image/')) continue
+      const reader = new FileReader()
+      reader.onload = () => {
+        const src = reader.result as string
+        editor.chain().focus().setImage({ src }).run()
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-sm animate-backdrop-in"
@@ -112,6 +134,25 @@ export function NoteModal({ note, onClose, onUpdate }: NoteModalProps) {
               icon={<OrderedListIcon className="w-4 h-4" />}
               active={editor.isActive('orderedList')}
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            />
+            <ToolbarButton
+              icon={<CheckboxIcon className="w-4 h-4" />}
+              active={editor.isActive('taskList')}
+              onClick={() => editor.chain().focus().toggleTaskList().run()}
+            />
+            <div className="w-px bg-stone-200 dark:bg-stone-700 mx-1.5" />
+            <ToolbarButton
+              icon={<ImageIcon className="w-4 h-4" />}
+              active={false}
+              onClick={() => imageInputRef.current?.click()}
+            />
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={e => { handleImageUpload(e.target.files); e.target.value = '' }}
             />
           </div>
         )}

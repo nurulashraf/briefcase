@@ -144,6 +144,25 @@ export function FileIcon({ className = 'w-4 h-4' }: IconProps) {
   )
 }
 
+export function CheckboxIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="14" height="14" rx="2" />
+      <path d="M7 10l2 2 4-4" />
+    </svg>
+  )
+}
+
+export function ImageIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="14" height="14" rx="2" />
+      <circle cx="7.5" cy="7.5" r="1.5" />
+      <path d="M17 13l-3.5-3.5L7 16" />
+    </svg>
+  )
+}
+
 export function LogOutIcon({ className = 'w-4 h-4' }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
